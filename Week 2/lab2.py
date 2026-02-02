@@ -15,7 +15,7 @@ import numpy as np
 # USER CONFIGURATION
 # ======================
 dataset_choice = "mnist"   # 'mnist' only here
-epochs = 50
+epochs = 5
 batch_size = 128
 noise_dim = 100
 learning_rate = 0.0002
@@ -168,15 +168,8 @@ for epoch in range(1, epochs + 1):
 # ======================
 # SAVE FINAL 100 IMAGES
 # ======================
-z = torch.randn(100, noise_dim, device=device)
-final_images = G(z)
 
-utils.save_image(
-    final_images,
-    "final_generated_images/final_100.png",
-    nrow=10,
-    normalize=True
-)
+
 
 # ======================
 # SIMPLE MNIST CLASSIFIER
@@ -197,15 +190,3 @@ class Classifier(nn.Module):
 classifier = Classifier().to(device)
 classifier.eval()
 
-# ======================
-# LABEL PREDICTION
-# ======================
-with torch.no_grad():
-    outputs = classifier(final_images)
-    preds = torch.argmax(outputs, dim=1)
-
-unique, counts = np.unique(preds.cpu().numpy(), return_counts=True)
-
-print("\nLabel distribution of generated images:")
-for u, c in zip(unique, counts):
-    print(f"Digit {u}: {c}")
